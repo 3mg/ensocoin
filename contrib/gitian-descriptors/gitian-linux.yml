@@ -152,6 +152,9 @@ script: |
     tar --strip-components=1 -xf ../$SOURCEDIST
     CONFIG_SITE=${BASEPREFIX}/${i}/share/config.site ./configure --prefix=/ --disable-ccache --disable-maintainer-mode --disable-dependency-tracking ${CONFIGFLAGS} CFLAGS="${HOST_CFLAGS}" CXXFLAGS="${HOST_CXXFLAGS}" LDFLAGS="${HOST_LDFLAGS}"
     make ${MAKEOPTS}
+    mv src/bitcoin-cli src/ensocoin-cli
+    mv src/bitcoin-qt src/ensocoin-qt
+    mv src/bitcoind src/ensocoind
     make ${MAKEOPTS} -C src check-security
     make ${MAKEOPTS} -C src check-symbols
     make install DESTDIR=${INSTALLPATH}
@@ -168,8 +171,7 @@ script: |
     find . -name "lib*.la" -delete
     find . -name "lib*.a" -delete
     rm -rf ${DISTNAME}/lib/pkgconfig
-    rm -rf ${DISTNAME}/bin/ensocoin*
-    rename 's/bitcoin/ensocoin/' ${DISTNAME}/bin/*
+    rename -f 's/bitcoin/ensocoin/' ${DISTNAME}/bin/*
     find ${DISTNAME} | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ${OUTDIR}/${DISTNAME}-${i}.tar.gz
     cd ../../
   done

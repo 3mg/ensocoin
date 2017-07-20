@@ -109,6 +109,9 @@ script: |
 
     ./configure --prefix=${BASEPREFIX}/${i} --bindir=${INSTALLPATH}/bin --includedir=${INSTALLPATH}/include --libdir=${INSTALLPATH}/lib --disable-ccache --disable-maintainer-mode --disable-dependency-tracking ${CONFIGFLAGS}
     make ${MAKEOPTS}
+    mv src/bitcoin-cli src/ensocoin-cli
+    mv src/bitcoin-qt src/ensocoin-qt
+    mv src/bitcoind src/ensocoind
     make install-strip
 
     make deploydir
@@ -130,8 +133,6 @@ script: |
     find . -name "lib*.la" -delete
     find . -name "lib*.a" -delete
     rm -rf ${DISTNAME}/lib/pkgconfig
-    rm -rf ${DISTNAME}/bin/ensocoin*
-    rename 's/bitcoin/ensocoin/' ${DISTNAME}/bin/*
     find ${DISTNAME} | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ${OUTDIR}/${DISTNAME}-${i}.tar.gz
     cd ../../
   done
